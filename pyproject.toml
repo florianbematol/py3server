@@ -1,0 +1,62 @@
+[build-system]
+requires = ["poetry-core>=1.0.0", "setuptools"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "py3server"
+version = "0.0.0"
+description = ""
+authors = ["Florian <dev.florianbematol@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+flake8 = "^4.0.1"
+tox = "^3.24.4"
+pytest-mock = "^3.6.1"
+requests = "^2.26.0"
+coverage = {extras = ["toml"], version = "^6.2"}
+pytest-sugar = "^0.9.4"
+pytest-xdist = "^2.5.0"
+pytest-ordering = "^0.6"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+
+[testenv:tests]
+whitelist_externals = poetry
+commands =
+    poetry run pytest tests -n auto
+
+[testenv:e2e]
+whitelist_externals = poetry
+setenv =
+    LOG_LEVEL=INFO
+commands =
+    poetry run pytest e2e
+
+[testenv:coverage]
+whitelist_externals = poetry
+commands =
+    poetry run coverage run --source=. -m pytest tests --ignore-glob=tests\\e2e --confcutdir=tests
+	poetry run coverage combine
+	poetry run coverage report -m
+"""
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+console_output_style = "progress"
+log_cli=true
+
+[tool.coverage.run]
+omit = [".*", "tests/**"]
+concurrency = ["multiprocessing"]
+
+[tool.coverage.report]
+fail_under = 100
+

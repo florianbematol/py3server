@@ -1,0 +1,71 @@
+name: PR
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout py3server repository
+        uses: actions/checkout@v2
+
+      - name: Install and setup python env
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: make init
+
+      - name: Lint code
+        run: make lint
+  tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout py3server repository
+        uses: actions/checkout@v2
+
+      - name: Install and setup python env
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: make init
+
+      - name: Testing
+        run: make tests
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout py3server repository
+        uses: actions/checkout@v2
+
+      - name: Install and setup python env
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: make init
+
+      - name: End-to-end
+        run: make e2e
+
